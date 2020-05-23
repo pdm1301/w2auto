@@ -1,0 +1,88 @@
+ XCRD:
+ (
+Dlt=4.05;
+beta2=1.15;
+beta4=1.15;
+U3d3d = 7.3;
+FF2 = beta2*10.965;
+FF4 = beta4*6.815;
+zett=0.052;
+
+    open(11,"../xcards/HsphereDD.dat");
+    read(11,Vdd);
+    close(11);
+    open(11,"../xcards/HsphereDL.dat");
+    read(11,Vld);
+    close(11);
+    open(11,"../xcards/HsphereLL.dat");
+    read(11,Vll);
+    close(11);    
+
+    Ha={ 0.00, 0, 0, 1 };
+    pi=4*atan(1.0);
+    a=2*sqrt(pi/15.0);
+    b=(4.0/3.0)*sqrt(pi/5.0);
+ )
+
+// Fe 2+
+CNFG:
+        Ld 1s 3d
+   #i1  10  2  6
+   #i2   9  2  7
+   #i3   8  2  8
+
+   #m1  10  1  7
+   #m2   9  1  8
+   #m3   8  1  9
+
+ PARA:
+   U(3d,3d)=U3d3d;
+   U(3d,1s)=0d0;
+   Dlt(#i1 #i2 Ld 3d)=Dlt;
+
+ EXEC:
+   Range = {4000,-25,25,0.01};
+   Mode = XAS;
+   Dichro = {X,Y,Z};
+   Ninit=50;
+   Eadj(#i1)=0d0;
+   Eadj(#m1)=0d0;
+   Mag=3d;
+
+ OPRT://No.1 initial state Hamiltonian
+   Rk (#i*, 3d 3d)={FF2, FF4};
+   Zeta(#i*, 3d)=zett;
+   Ha (#i*, 3d)=Ha;
+
+     Vmat(#i1 3d)="Vdd";
+     Vmat(#i2 3d)="Vdd";
+     Vmat(#i3 3d)="Vdd";
+     Vmat(#i1 #i2 Ld 3d)="Vld";
+     Vmat(#i2 #i3 Ld 3d)="Vld";
+     Vmat(#i1 Ld)="Vll";
+     Vmat(#i2 Ld)="Vll";
+     Vmat(#i3 Ld)="Vll";    
+   
+OPRT://No.1 final state Hamiltonian
+   Rk (#m*, 3d 3d)={FF2, FF4};
+   Zeta(#m*, 3d)=zett;
+   Ha (#m*, 3d)=Ha;
+
+     Vmat(#m1 3d)="Vdd";
+     Vmat(#m2 3d)="Vdd";
+     Vmat(#m3 3d)="Vdd";
+     Vmat(#m1 #m2 Ld 3d)="Vld";
+     Vmat(#m2 #m3 Ld 3d)="Vld";     
+     Vmat(#m1 Ld)="Vll";
+     Vmat(#m2 Ld)="Vll";
+     Vmat(#m3 Ld)="Vll";
+
+OPRT://No.3 2p to 3d quadrupole transition matrix elements
+       CAk^X(#i*, #m$[|], 1s 3d)={2, 2, 0.0, -1.0};
+       CAk^X(#i*, #m$[|], 1s 3d)={2,-2, 0.0,  1.0};
+       CAk^Y(#i*, #m$[|], 1s 3d)={2, 1,-1.0, 0.0};
+       CAk^Y(#i*, #m$[|], 1s 3d)={2,-1, 1.0, 0.0};
+       CAk^Z(#i*, #m$[|], 1s 3d)={2, 1, 0.0, 1.0};
+       CAk^Z(#i*, #m$[|], 1s 3d)={2,-1, 0.0, 1.0};
+ XEND:
+ STOP:
